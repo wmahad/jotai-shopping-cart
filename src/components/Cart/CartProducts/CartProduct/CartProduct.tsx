@@ -4,13 +4,14 @@ import { ICartProduct } from 'models';
 import { useCart } from 'contexts/cart-context';
 
 import * as S from './style';
+import { useSetAtom } from 'jotai';
+import { addProductToCartAtom } from 'atoms';
 
 interface IProps {
   product: ICartProduct;
 }
 const CartProduct = ({ product }: IProps) => {
-  const { removeProduct, increaseProductQuantity, decreaseProductQuantity } =
-    useCart();
+  const { removeProduct, decreaseProductQuantity } = useCart();
   const {
     sku,
     title,
@@ -22,8 +23,10 @@ const CartProduct = ({ product }: IProps) => {
     quantity,
   } = product;
 
+  const addProdut = useSetAtom(addProductToCartAtom);
+
   const handleRemoveProduct = () => removeProduct(product);
-  const handleIncreaseProductQuantity = () => increaseProductQuantity(product);
+  const handleIncreaseProductQuantity = () => addProdut(product);
   const handleDecreaseProductQuantity = () => decreaseProductQuantity(product);
 
   return (

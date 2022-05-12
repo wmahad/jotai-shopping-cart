@@ -21,37 +21,10 @@ const useCartProducts = () => {
     }
   };
 
-  const addProduct = (newProduct: ICartProduct) => {
-    let updatedProducts;
-    const isProductAlreadyInCart = products.some(
-      (product: ICartProduct) => newProduct.id === product.id
-    );
-
-    if (isProductAlreadyInCart) {
-      updatedProducts = products.map((product: ICartProduct) => {
-        return updateQuantitySafely(product, newProduct, newProduct.quantity);
-      });
-    } else {
-      updatedProducts = [...products, newProduct];
-    }
-
-    setProducts(updatedProducts);
-    updateCartTotal(updatedProducts);
-  };
-
   const removeProduct = (productToRemove: ICartProduct) => {
     const updatedProducts = products.filter(
       (product: ICartProduct) => product.id !== productToRemove.id
     );
-
-    setProducts(updatedProducts);
-    updateCartTotal(updatedProducts);
-  };
-
-  const increaseProductQuantity = (productToIncrease: ICartProduct) => {
-    const updatedProducts = products.map((product: ICartProduct) => {
-      return updateQuantitySafely(product, productToIncrease, +1);
-    });
 
     setProducts(updatedProducts);
     updateCartTotal(updatedProducts);
@@ -68,9 +41,7 @@ const useCartProducts = () => {
 
   return {
     products,
-    addProduct,
     removeProduct,
-    increaseProductQuantity,
     decreaseProductQuantity,
   };
 };

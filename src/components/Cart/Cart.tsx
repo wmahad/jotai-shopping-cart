@@ -4,15 +4,16 @@ import CartProducts from './CartProducts';
 import { useCart } from 'contexts/cart-context';
 
 import * as S from './style';
-import { useAtom } from 'jotai';
-import { isOpenAtom } from 'atoms';
+import { useAtom, useAtomValue } from 'jotai';
+import { cartQuantityAtom, isOpenAtom } from 'atoms';
 
 const Cart = () => {
   const { total } = useCart();
   const [isOpen, toggle] = useAtom(isOpenAtom);
+  const productQuantity = useAtomValue(cartQuantityAtom);
 
   const handleCheckout = () => {
-    if (total.productQuantity) {
+    if (productQuantity) {
       alert(
         `Checkout - Subtotal: ${total.currencyFormat} ${formatPrice(
           total.totalPrice,
@@ -34,7 +35,7 @@ const Cart = () => {
         ) : (
           <S.CartIcon>
             <S.CartQuantity title="Products in cart quantity">
-              {total.productQuantity}
+              {productQuantity}
             </S.CartQuantity>
           </S.CartIcon>
         )}
@@ -44,7 +45,7 @@ const Cart = () => {
         <S.CartContent>
           <S.CartContentHeader>
             <S.CartIcon large>
-              <S.CartQuantity>{total.productQuantity}</S.CartQuantity>
+              <S.CartQuantity>{productQuantity}</S.CartQuantity>
             </S.CartIcon>
             <S.HeaderTitle>Cart</S.HeaderTitle>
           </S.CartContentHeader>
@@ -59,7 +60,7 @@ const Cart = () => {
                 total.currencyId
               )}`}</S.SubPriceValue>
               <S.SubPriceInstallment>
-                {total.installments ? (
+                {total.installments && (
                   <span>
                     {`OR UP TO ${total.installments} x ${
                       total.currencyFormat
@@ -68,7 +69,7 @@ const Cart = () => {
                       total.currencyId
                     )}`}
                   </span>
-                ) : null}
+                )}
               </S.SubPriceInstallment>
             </S.SubPrice>
             <S.CheckoutButton onClick={handleCheckout} autoFocus>

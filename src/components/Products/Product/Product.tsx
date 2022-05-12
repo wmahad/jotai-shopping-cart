@@ -3,11 +3,9 @@ import { KeyboardEvent } from 'react';
 import formatPrice from 'utils/formatPrice';
 import { IProduct } from 'models';
 
-import { useCart } from 'contexts/cart-context';
-
 import * as S from './style';
 import { useSetAtom } from 'jotai';
-import { cartProductsAtom, isOpenAtom } from 'atoms';
+import { addProductToCartAtom } from 'atoms';
 
 interface IProps {
   product: IProduct;
@@ -24,9 +22,7 @@ const Product = ({ product }: IProps) => {
     isFreeShipping,
   } = product;
 
-  const toggle = useSetAtom(isOpenAtom);
-  const addProduct = useSetAtom(cartProductsAtom);
-  const openCart = () => toggle(true);
+  const addProduct = useSetAtom(addProductToCartAtom);
 
   const formattedPrice = formatPrice(price, currencyId);
   let productInstallment;
@@ -45,15 +41,11 @@ const Product = ({ product }: IProps) => {
     );
   }
 
-  const handleAddProduct = () => {
-    addProduct((list) => [...list, { ...product, quantity: 1 }]);
-    openCart();
-  };
+  const handleAddProduct = () => addProduct({ ...product, quantity: 1 });
 
   const handleAddProductWhenEnter = (event: KeyboardEvent) => {
     if (event.key === 'Enter' || event.code === 'Space') {
-      addProduct((list) => [...list, { ...product, quantity: 1 }]);
-      openCart();
+      handleAddProduct();
     }
   };
 
