@@ -1,15 +1,12 @@
-import useCartProducts from './useCartProducts';
+import { useCartContext } from './CartContextProvider';
 import useCartTotal from './useCartTotal';
 
 const useCart = () => {
-  const { products, removeProduct, decreaseProductQuantity } =
-    useCartProducts();
+  const { products } = useCartContext();
   const { total, updateCartTotal } = useCartTotal();
 
   return {
     products,
-    removeProduct,
-    decreaseProductQuantity,
     total,
     updateCartTotal,
   };

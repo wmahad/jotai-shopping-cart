@@ -37,6 +37,27 @@ export const addProductToCartAtom = atom(
   }
 );
 
+export const removeProductFromCartAtom = atom(
+  null,
+  (_get, set, update: ICartProduct) => {
+    set(cartProductsAtom, (prev) => prev.filter((p) => p.id !== update.id));
+  }
+);
+
+export const decreaseProductQuantityAtom = atom(
+  null,
+  (_get, set, update: ICartProduct) => {
+    set(cartProductsAtom, (prev) =>
+      prev
+        .map((p) => {
+          if (p.id !== update.id) return p;
+          return { ...p, quantity: (p.quantity -= 1) };
+        })
+        .filter((p) => !!p.quantity)
+    );
+  }
+);
+
 const resultAtom = atom<Result>({ loading: true, error: null, data: null });
 
 export const fetchProductsAtom = atom(
