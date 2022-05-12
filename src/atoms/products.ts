@@ -1,7 +1,8 @@
-import { isOpenAtom } from './misc';
+import { isOpenAtom, filtersAtom } from './misc';
 import { IProduct, ICartProduct } from './../models';
 import { PrimitiveAtom, atom } from 'jotai';
 import { getProducts } from 'services/products';
+import { focusAtom } from 'jotai/optics';
 
 type GetProducts = typeof getProducts;
 
@@ -79,3 +80,17 @@ export const fetchProductsAtom = atom(
 fetchProductsAtom.onMount = (fetchProducts) => {
   fetchProducts(getProducts);
 };
+
+const focusedAtom = focusAtom(resultAtom, (optic) => optic.prop('data'));
+
+export const productsAtom = atom((get) => {
+  const filters = get(filtersAtom);
+  const products = get(focusedAtom) ?? [];
+  return !filters?.length
+    ? products
+    : products.filter((p) =>
+        filters.find((filter) =>
+          p.availableSizes.find((size) => size === filter)
+        )
+      );
+});

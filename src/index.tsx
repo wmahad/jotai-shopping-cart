@@ -6,9 +6,6 @@ import { ThemeProvider } from 'commons/style/styled-components';
 import { theme } from 'commons/style/theme';
 import GlobalStyle from 'commons/style/global-style';
 
-/* Context Providers */
-import { ProductsProvider } from 'contexts/products-context';
-
 import App from 'components/App';
 
 const root = document.getElementById('root')!;
@@ -18,9 +15,7 @@ container.render(
   <StrictMode>
     <ThemeProvider theme={theme}>
       <GlobalStyle />
-      <ProductsProvider>
-        <App />
-      </ProductsProvider>
+      <App />
     </ThemeProvider>
   </StrictMode>
 );

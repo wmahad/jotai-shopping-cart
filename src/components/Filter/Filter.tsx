@@ -1,36 +1,19 @@
-import { useProducts } from 'contexts/products-context';
+import { selectedFiltersAtom } from 'atoms';
+import { useSetAtom } from 'jotai';
 
 import * as S from './style';
 
 export const availableSizes = ['XS', 'S', 'M', 'ML', 'L', 'XL', 'XXL'];
 
 const Filter = () => {
-  const { filters, filterProducts } = useProducts();
-
-  const selectedCheckboxes = new Set(filters);
-
-  const toggleCheckbox = (label: string) => {
-    if (selectedCheckboxes.has(label)) {
-      selectedCheckboxes.delete(label);
-    } else {
-      selectedCheckboxes.add(label);
-    }
-
-    const filters = Array.from(selectedCheckboxes) as [];
-
-    filterProducts(filters);
-  };
-
-  const createCheckbox = (label: string) => (
-    <S.Checkbox label={label} handleOnChange={toggleCheckbox} key={label} />
-  );
-
-  const createCheckboxes = () => availableSizes.map(createCheckbox);
+  const filterProducts = useSetAtom(selectedFiltersAtom);
 
   return (
     <S.Container>
       <S.Title>Sizes:</S.Title>
-      {createCheckboxes()}
+      {availableSizes.map((label) => (
+        <S.Checkbox label={label} handleOnChange={filterProducts} key={label} />
+      ))}
     </S.Container>
   );
 };

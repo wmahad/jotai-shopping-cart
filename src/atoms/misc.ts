@@ -12,3 +12,12 @@ export function atomWithToggle(
 }
 
 export const isOpenAtom = atomWithToggle(false);
+
+export const filtersAtom = atom<string[]>([]);
+
+export const selectedFiltersAtom = atom(null, (get, set, filter: string) => {
+  set(filtersAtom, (prev) => {
+    if (prev.includes(filter)) return prev.filter((p) => p !== filter);
+    return [...prev, filter];
+  });
+});

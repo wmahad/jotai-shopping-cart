@@ -14,3 +14,10 @@ export const Container = styled.div`
     grid-template-columns: repeat(4, 1fr);
   }
 `;
+
+export const MainHeader = styled.main`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-content: end;
+  padding: 0 15px;
+`;

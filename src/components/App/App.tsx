@@ -8,7 +8,7 @@ import { useAtomValue } from 'jotai';
 import { fetchProductsAtom } from 'atoms';
 
 function App() {
-  const { loading, data } = useAtomValue(fetchProductsAtom);
+  const { loading } = useAtomValue(fetchProductsAtom);
 
   return (
     <S.Container>
@@ -18,10 +18,7 @@ function App() {
           <Filter />
         </S.Side>
         <S.Main>
-          <S.MainHeader>
-            <p>{data?.length} Product(s) found</p>
-          </S.MainHeader>
-          {!!data?.length && <Products products={data} />}
+          <Products />
         </S.Main>
       </S.TwoColumnGrid>
       <Cart />
