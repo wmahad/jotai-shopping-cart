@@ -1,4 +1,4 @@
-import { IProduct } from './../models/index';
+import { IProduct, ICartProduct } from './../models';
 import { atom } from 'jotai';
 import { getProducts } from 'services/products';
 
@@ -10,7 +10,7 @@ export interface Result {
   data: IProduct[] | null;
 }
 
-export const productsAtom = atom([]);
+export const cartProductsAtom = atom<ICartProduct[]>([]);
 
 const resultAtom = atom<Result>({ loading: true, error: null, data: null });
 

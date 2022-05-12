@@ -1,13 +1,12 @@
-import { ICartProduct } from 'models';
+import { cartProductsAtom } from 'atoms';
+import { useAtomValue } from 'jotai';
 import CartProduct from './CartProduct';
 
 import * as S from './style';
 
-interface IProps {
-  products: ICartProduct[];
-}
+const CartProducts = () => {
+  const products = useAtomValue(cartProductsAtom);
 
-const CartProducts = ({ products }: IProps) => {
   return (
     <S.Container>
       {products?.length ? (

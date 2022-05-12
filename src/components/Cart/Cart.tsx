@@ -8,7 +8,7 @@ import { useAtom } from 'jotai';
 import { isOpenAtom } from 'atoms';
 
 const Cart = () => {
-  const { products, total } = useCart();
+  const { total } = useCart();
   const [isOpen, toggle] = useAtom(isOpenAtom);
 
   const handleCheckout = () => {
@@ -49,7 +49,7 @@ const Cart = () => {
             <S.HeaderTitle>Cart</S.HeaderTitle>
           </S.CartContentHeader>
 
-          <CartProducts products={products} />
+          <CartProducts />
 
           <S.CartFooter>
             <S.Sub>SUBTOTAL</S.Sub>

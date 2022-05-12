@@ -7,14 +7,13 @@ import { useCart } from 'contexts/cart-context';
 
 import * as S from './style';
 import { useSetAtom } from 'jotai';
-import { isOpenAtom } from 'atoms';
+import { cartProductsAtom, isOpenAtom } from 'atoms';
 
 interface IProps {
   product: IProduct;
 }
 
 const Product = ({ product }: IProps) => {
-  const { addProduct } = useCart();
   const {
     sku,
     title,
@@ -26,6 +25,7 @@ const Product = ({ product }: IProps) => {
   } = product;
 
   const toggle = useSetAtom(isOpenAtom);
+  const addProduct = useSetAtom(cartProductsAtom);
   const openCart = () => toggle(true);
 
   const formattedPrice = formatPrice(price, currencyId);
@@ -46,13 +46,13 @@ const Product = ({ product }: IProps) => {
   }
 
   const handleAddProduct = () => {
-    addProduct({ ...product, quantity: 1 });
+    addProduct((list) => [...list, { ...product, quantity: 1 }]);
     openCart();
   };
 
   const handleAddProductWhenEnter = (event: KeyboardEvent) => {
     if (event.key === 'Enter' || event.code === 'Space') {
-      addProduct({ ...product, quantity: 1 });
+      addProduct((list) => [...list, { ...product, quantity: 1 }]);
       openCart();
     }
   };
