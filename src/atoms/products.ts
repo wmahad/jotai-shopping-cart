@@ -13,12 +13,21 @@ export interface Result {
 
 export const cartProductsAtom = atom<readonly ICartProduct[]>([]);
 
-export const cartQuantityAtom = atom((get) =>
-  get(cartProductsAtom).reduce((acc, product: ICartProduct) => {
-    acc += product.quantity;
-    return acc;
-  }, 0)
-);
+export const cartStatsAtom = atom((get) => {
+  return get(cartProductsAtom).reduce(
+    (acc, p) => {
+      // calculate price
+      acc.price += p.price * p.quantity;
+      // calculate the quantity
+      acc.quantity += p.quantity;
+      // calculate installments
+      acc.installments =
+        p.installments > acc.installments ? p.installments : acc.installments;
+      return acc;
+    },
+    { price: 0, quantity: 0, installments: 0 }
+  );
+});
 
 export const addProductToCartAtom = atom(
   null,

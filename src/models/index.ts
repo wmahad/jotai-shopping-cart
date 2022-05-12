@@ -29,3 +29,6 @@ export interface IGetProductsResponse {
     products: IProduct[];
   };
 }
+
+export const currencyId = 'USD';
+export const currencyFormat = '$';

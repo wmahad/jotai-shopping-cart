@@ -8,7 +8,6 @@ import GlobalStyle from 'commons/style/global-style';
 
 /* Context Providers */
 import { ProductsProvider } from 'contexts/products-context';
-import { CartProvider } from 'contexts/cart-context';
 
 import App from 'components/App';
 
@@ -20,9 +19,7 @@ container.render(
     <ThemeProvider theme={theme}>
       <GlobalStyle />
       <ProductsProvider>
-        <CartProvider>
-          <App />
-        </CartProvider>
+        <App />
       </ProductsProvider>
     </ThemeProvider>
   </StrictMode>

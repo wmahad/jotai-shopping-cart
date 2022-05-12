@@ -1,23 +1,21 @@
 import formatPrice from 'utils/formatPrice';
 import CartProducts from './CartProducts';
 
-import { useCart } from 'contexts/cart-context';
-
 import * as S from './style';
 import { useAtom, useAtomValue } from 'jotai';
-import { cartQuantityAtom, isOpenAtom } from 'atoms';
+import { cartStatsAtom, isOpenAtom } from 'atoms';
+import { currencyFormat, currencyId } from 'models';
 
 const Cart = () => {
-  const { total } = useCart();
   const [isOpen, toggle] = useAtom(isOpenAtom);
-  const productQuantity = useAtomValue(cartQuantityAtom);
+  const { quantity, price, installments } = useAtomValue(cartStatsAtom);
 
   const handleCheckout = () => {
-    if (productQuantity) {
+    if (quantity) {
       alert(
-        `Checkout - Subtotal: ${total.currencyFormat} ${formatPrice(
-          total.totalPrice,
-          total.currencyId
+        `Checkout - Subtotal: ${currencyFormat} ${formatPrice(
+          price,
+          currencyId
         )}`
       );
     } else {
@@ -35,7 +33,7 @@ const Cart = () => {
         ) : (
           <S.CartIcon>
             <S.CartQuantity title="Products in cart quantity">
-              {productQuantity}
+              {quantity}
             </S.CartQuantity>
           </S.CartIcon>
         )}
@@ -45,7 +43,7 @@ const Cart = () => {
         <S.CartContent>
           <S.CartContentHeader>
             <S.CartIcon large>
-              <S.CartQuantity>{productQuantity}</S.CartQuantity>
+              <S.CartQuantity>{quantity}</S.CartQuantity>
             </S.CartIcon>
             <S.HeaderTitle>Cart</S.HeaderTitle>
           </S.CartContentHeader>
@@ -55,18 +53,16 @@ const Cart = () => {
           <S.CartFooter>
             <S.Sub>SUBTOTAL</S.Sub>
             <S.SubPrice>
-              <S.SubPriceValue>{`${total.currencyFormat} ${formatPrice(
-                total.totalPrice,
-                total.currencyId
+              <S.SubPriceValue>{`${currencyFormat} ${formatPrice(
+                price,
+                currencyId
               )}`}</S.SubPriceValue>
               <S.SubPriceInstallment>
-                {total.installments && (
+                {installments && (
                   <span>
-                    {`OR UP TO ${total.installments} x ${
-                      total.currencyFormat
-                    } ${formatPrice(
-                      total.totalPrice / total.installments,
-                      total.currencyId
+                    {`OR UP TO ${installments} x ${currencyFormat} ${formatPrice(
+                      price / installments,
+                      currencyId
                     )}`}
                   </span>
                 )}
