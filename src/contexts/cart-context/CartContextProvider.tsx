@@ -2,8 +2,6 @@ import { createContext, useContext, FC, useState } from 'react';
 import { ICartProduct, ICartTotal } from 'models';
 
 export interface ICartContext {
-  isOpen: boolean;
-  setIsOpen(state: boolean): void;
   products: ICartProduct[];
   setProducts(products: ICartProduct[]): void;
   total: ICartTotal;
@@ -30,13 +28,10 @@ const totalInitialValues = {
 };
 
 const CartProvider: FC = (props) => {
-  const [isOpen, setIsOpen] = useState(false);
   const [products, setProducts] = useState<ICartProduct[]>([]);
   const [total, setTotal] = useState<ICartTotal>(totalInitialValues);
 
   const CartContextValue: ICartContext = {
-    isOpen,
-    setIsOpen,
     products,
     setProducts,
     total,

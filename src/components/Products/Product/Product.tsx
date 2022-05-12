@@ -6,13 +6,15 @@ import { IProduct } from 'models';
 import { useCart } from 'contexts/cart-context';
 
 import * as S from './style';
+import { useSetAtom } from 'jotai';
+import { isOpenAtom } from 'atoms';
 
 interface IProps {
   product: IProduct;
 }
 
 const Product = ({ product }: IProps) => {
-  const { openCart, addProduct } = useCart();
+  const { addProduct } = useCart();
   const {
     sku,
     title,
@@ -22,6 +24,9 @@ const Product = ({ product }: IProps) => {
     currencyFormat,
     isFreeShipping,
   } = product;
+
+  const toggle = useSetAtom(isOpenAtom);
+  const openCart = () => toggle(true);
 
   const formattedPrice = formatPrice(price, currencyId);
   let productInstallment;

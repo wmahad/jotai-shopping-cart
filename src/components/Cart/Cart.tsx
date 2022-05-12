@@ -4,9 +4,12 @@ import CartProducts from './CartProducts';
 import { useCart } from 'contexts/cart-context';
 
 import * as S from './style';
+import { useAtom } from 'jotai';
+import { isOpenAtom } from 'atoms';
 
 const Cart = () => {
-  const { products, total, isOpen, openCart, closeCart } = useCart();
+  const { products, total } = useCart();
+  const [isOpen, toggle] = useAtom(isOpenAtom);
 
   const handleCheckout = () => {
     if (total.productQuantity) {
@@ -21,12 +24,11 @@ const Cart = () => {
     }
   };
 
-  const handleToggleCart = (isOpen: boolean) => () =>
-    isOpen ? closeCart() : openCart();
+  const handleToggleCart = () => toggle();
 
   return (
     <S.Container isOpen={isOpen}>
-      <S.CartButton onClick={handleToggleCart(isOpen)}>
+      <S.CartButton onClick={handleToggleCart}>
         {isOpen ? (
           <span>X</span>
         ) : (
