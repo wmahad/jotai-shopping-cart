@@ -41,7 +41,7 @@ const Product = ({ product }: IProps) => {
     );
   }
 
-  const handleAddProduct = () => addProduct({ ...product, quantity: 1 });
+  const handleAddProduct = () => addProduct(product);
 
   const handleAddProductWhenEnter = (event: KeyboardEvent) => {
     if (event.key === 'Enter' || event.code === 'Space') {

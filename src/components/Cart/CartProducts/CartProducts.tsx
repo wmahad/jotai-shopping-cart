@@ -10,7 +10,7 @@ const CartProducts = () => {
   return (
     <S.Container>
       {products?.length ? (
-        products.map((p) => <CartProduct product={p} key={p.sku} />)
+        products.map((p) => <CartProduct item={p} key={`${p}`} />)
       ) : (
         <S.CartProductsEmpty>
           Add some products in the cart <br />

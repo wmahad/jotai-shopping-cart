@@ -1,6 +1,6 @@
 import { isOpenAtom } from './misc';
 import { IProduct, ICartProduct } from './../models';
-import { atom } from 'jotai';
+import { PrimitiveAtom, atom } from 'jotai';
 import { getProducts } from 'services/products';
 
 type GetProducts = typeof getProducts;
@@ -11,59 +11,50 @@ export interface Result {
   data: IProduct[] | null;
 }
 
-export const cartProductsAtom = atom<readonly ICartProduct[]>([]);
+export type CartProductAtom = PrimitiveAtom<ICartProduct>;
+
+export const cartProductsAtom = atom<CartProductAtom[]>([]);
+
+export const addProductToCartAtom = atom(null, (get, set, value: IProduct) => {
+  const productAtom = get(cartProductsAtom).find((p) =>
+    get<IProduct>(p).id === value.id ? p : null
+  );
+  if (!productAtom) {
+    set(cartProductsAtom, (prev) => [...prev, atom({ ...value, quantity: 1 })]);
+  } else {
+    set(productAtom, (p) => ({ ...p, quantity: (p.quantity += 1) }));
+  }
+  set(isOpenAtom, true);
+});
+
+export const quantityAtom = atom((get) => {
+  return get(cartProductsAtom).reduce((acc, p) => {
+    acc += get(p).quantity;
+    return acc;
+  }, 0);
+});
 
 export const cartStatsAtom = atom((get) => {
   return get(cartProductsAtom).reduce(
     (acc, p) => {
+      const product = get(p);
       // calculate price
-      acc.price += p.price * p.quantity;
-      // calculate the quantity
-      acc.quantity += p.quantity;
+      acc.price += product.price * product.quantity;
       // calculate installments
       acc.installments =
-        p.installments > acc.installments ? p.installments : acc.installments;
+        product.installments > acc.installments
+          ? product.installments
+          : acc.installments;
       return acc;
     },
-    { price: 0, quantity: 0, installments: 0 }
+    { price: 0, installments: 0 }
   );
 });
 
-export const addProductToCartAtom = atom(
-  null,
-  (_get, set, update: ICartProduct) => {
-    set(cartProductsAtom, (prev) => {
-      if (!prev.some((product) => update.id === product.id)) {
-        return [...prev, { ...update, quantity: 1 }];
-      }
-
-      return prev.map((p) => {
-        if (p.id !== update.id) return p;
-        return { ...p, quantity: (p.quantity += 1) };
-      });
-    });
-    set(isOpenAtom, true);
-  }
-);
-
 export const removeProductFromCartAtom = atom(
   null,
-  (_get, set, update: ICartProduct) => {
-    set(cartProductsAtom, (prev) => prev.filter((p) => p.id !== update.id));
-  }
-);
-
-export const decreaseProductQuantityAtom = atom(
-  null,
-  (_get, set, update: ICartProduct) => {
-    set(cartProductsAtom, (prev) =>
-      prev
-        .map((p) => {
-          if (p.id !== update.id) return p;
-          return { ...p, quantity: (p.quantity -= 1) };
-        })
-        .filter((p) => !!p.quantity)
-    );
+  (_get, set, update: CartProductAtom) => {
+    set(cartProductsAtom, (prev) => prev.filter((p) => p !== update));
   }
 );
 

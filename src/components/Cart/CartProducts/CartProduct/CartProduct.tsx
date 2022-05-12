@@ -1,18 +1,14 @@
 import formatPrice from 'utils/formatPrice';
-import { ICartProduct } from 'models';
 
 import * as S from './style';
-import { useSetAtom } from 'jotai';
-import {
-  addProductToCartAtom,
-  removeProductFromCartAtom,
-  decreaseProductQuantityAtom,
-} from 'atoms';
+import { useSetAtom, useAtom } from 'jotai';
+import { removeProductFromCartAtom, CartProductAtom } from 'atoms';
 
 interface IProps {
-  product: ICartProduct;
+  item: CartProductAtom;
 }
-const CartProduct = ({ product }: IProps) => {
+const CartProduct = ({ item }: IProps) => {
+  const [product, setProduct] = useAtom(item);
   const {
     sku,
     title,
@@ -24,13 +20,15 @@ const CartProduct = ({ product }: IProps) => {
     quantity,
   } = product;
 
-  const addProdut = useSetAtom(addProductToCartAtom);
   const removeProduct = useSetAtom(removeProductFromCartAtom);
-  const decreaseProductQuantity = useSetAtom(decreaseProductQuantityAtom);
 
-  const handleRemoveProduct = () => removeProduct(product);
-  const handleIncreaseProductQuantity = () => addProdut(product);
-  const handleDecreaseProductQuantity = () => decreaseProductQuantity(product);
+  const handleRemoveProduct = () => removeProduct(item);
+  const handleIncreaseProductQuantity = () => {
+    setProduct((p) => ({ ...p, quantity: (p.quantity += 1) }));
+  };
+  const handleDecreaseProductQuantity = () => {
+    setProduct((p) => ({ ...p, quantity: (p.quantity -= 1) }));
+  };
 
   return (
     <S.Container>

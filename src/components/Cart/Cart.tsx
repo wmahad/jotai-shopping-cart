@@ -3,12 +3,31 @@ import CartProducts from './CartProducts';
 
 import * as S from './style';
 import { useAtom, useAtomValue } from 'jotai';
-import { cartStatsAtom, isOpenAtom } from 'atoms';
+import { cartStatsAtom, isOpenAtom, quantityAtom } from 'atoms';
 import { currencyFormat, currencyId } from 'models';
 
-const Cart = () => {
-  const [isOpen, toggle] = useAtom(isOpenAtom);
-  const { quantity, price, installments } = useAtomValue(cartStatsAtom);
+function CartIcon({ large, title }: { large?: boolean; title?: string }) {
+  const quantity = useAtomValue(quantityAtom);
+
+  return (
+    <S.CartIcon large={large}>
+      <S.CartQuantity title={title}>{quantity}</S.CartQuantity>
+    </S.CartIcon>
+  );
+}
+
+function CartHeader() {
+  return (
+    <S.CartContentHeader>
+      <CartIcon large />
+      <S.HeaderTitle>Cart</S.HeaderTitle>
+    </S.CartContentHeader>
+  );
+}
+
+function CartFooter() {
+  const quantity = useAtomValue(quantityAtom);
+  const { price, installments } = useAtomValue(cartStatsAtom);
 
   const handleCheckout = () => {
     if (quantity) {
@@ -23,6 +42,34 @@ const Cart = () => {
     }
   };
 
+  return (
+    <S.CartFooter>
+      <S.Sub>SUBTOTAL</S.Sub>
+      <S.SubPrice>
+        <S.SubPriceValue>{`${currencyFormat} ${formatPrice(
+          price,
+          currencyId
+        )}`}</S.SubPriceValue>
+        <S.SubPriceInstallment>
+          {installments && (
+            <span>
+              {`OR UP TO ${installments} x ${currencyFormat} ${formatPrice(
+                price / installments,
+                currencyId
+              )}`}
+            </span>
+          )}
+        </S.SubPriceInstallment>
+      </S.SubPrice>
+      <S.CheckoutButton onClick={handleCheckout} autoFocus>
+        Checkout
+      </S.CheckoutButton>
+    </S.CartFooter>
+  );
+}
+
+const Cart = () => {
+  const [isOpen, toggle] = useAtom(isOpenAtom);
   const handleToggleCart = () => toggle();
 
   return (
@@ -31,47 +78,15 @@ const Cart = () => {
         {isOpen ? (
           <span>X</span>
         ) : (
-          <S.CartIcon>
-            <S.CartQuantity title="Products in cart quantity">
-              {quantity}
-            </S.CartQuantity>
-          </S.CartIcon>
+          <CartIcon title="Products in cart quantity" />
         )}
       </S.CartButton>
 
       {isOpen && (
         <S.CartContent>
-          <S.CartContentHeader>
-            <S.CartIcon large>
-              <S.CartQuantity>{quantity}</S.CartQuantity>
-            </S.CartIcon>
-            <S.HeaderTitle>Cart</S.HeaderTitle>
-          </S.CartContentHeader>
-
+          <CartHeader />
           <CartProducts />
-
-          <S.CartFooter>
-            <S.Sub>SUBTOTAL</S.Sub>
-            <S.SubPrice>
-              <S.SubPriceValue>{`${currencyFormat} ${formatPrice(
-                price,
-                currencyId
-              )}`}</S.SubPriceValue>
-              <S.SubPriceInstallment>
-                {installments && (
-                  <span>
-                    {`OR UP TO ${installments} x ${currencyFormat} ${formatPrice(
-                      price / installments,
-                      currencyId
-                    )}`}
-                  </span>
-                )}
-              </S.SubPriceInstallment>
-            </S.SubPrice>
-            <S.CheckoutButton onClick={handleCheckout} autoFocus>
-              Checkout
-            </S.CheckoutButton>
-          </S.CartFooter>
+          <CartFooter />
         </S.CartContent>
       )}
     </S.Container>
